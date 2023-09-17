@@ -1,0 +1,62 @@
+# Byte-compiled / optimized Python files
+__pycache__/
+*.pyc
+
+# Virtual environment
+venv/
+env/
+*.egg-info/
+dist/
+build/
+
+# Logs and databases
+*.log
+*.db
+
+# Dash cache and session data
+*.dash
+
+# IDE specific files
+.idea/
+.vscode/
+
+# Compiled Python files
+*.pyc
+*.pyo
+
+# Jupyter Notebook specific files
+.ipynb_checkpoints/
+
+# Environment variables
+.env
+
+# Dash generated files
+/_dash-component-suites/
+/_dash-layout/
+/_dash-dependencies/
+
+# Dash cache
+/.dash_cache/
+
+# Dash snapshots
+/.dash_snapshots/
+
+# Mac OS system files
+.DS_Store
+
+# Windows Thumbs.db file
+Thumbs.db
+
+# Compiled C extension
+*.so
+
+# Distribution / packaging
+.Python
+dist/
+build/
+eggs/
+*.egg-info/
+
+# JetBrains IDEs
+.idea/
+*.iml
