@@ -3,6 +3,7 @@ from components import FormRow
 import dash_bootstrap_components as dbc
 from pages.register_patients import register_patients_callbacks
 
+
 def get_input_area(object_name, heading, type, place_holder=None):
     control = dcc.Input(
         id=f"{object_name}-id",
@@ -27,7 +28,11 @@ def get_input_area(object_name, heading, type, place_holder=None):
 
     return form_row
 
+
+clinic_code_row = get_input_area("clinic_code", "Clinic code", "text", )
+gender_row = get_input_area("gender", "Gender", "text", )
 email_row = get_input_area("email", "Email Name", "text", )
+age_row = get_input_area("age", "Age", "text", )
 full_name_row = get_input_area("full_name", "Full Name", "text", )
 contact_number_row = get_input_area("contact_number", "Contact Number", "text", )
 patient_id_row = get_input_area("nric", "NRIC", "text", )
@@ -35,7 +40,7 @@ vital_stats_sub_row = get_input_area("vital_stats_sub", "Vital Stats Submission 
 device_type_row = get_input_area("device_type", "Device Type", "text", )
 device_serial_number_row = get_input_area("device_serial_number", "Device Serial Number", "text", )
 user_type_row = get_input_area("user_type", "User Type", "text", )
-
+remarks_row = get_input_area("remarks", "Remarks", "text", )
 
 save_row = html.Div(
     [
@@ -63,14 +68,18 @@ layout = html.Div(
                             dbc.Form(
                                 id="register-patient-form",
                                 children=[
-email_row,
-                                    full_name_row,
-                                    contact_number_row,
+                                    clinic_code_row,
                                     patient_id_row,
-                                    vital_stats_sub_row,
-                                    device_type_row,
-                                    device_serial_number_row,
+                                    age_row,
+                                    gender_row,
+                                    email_row,
+                                    full_name_row,
+                                    # contact_number_row,
+                                    # vital_stats_sub_row,
+                                    # device_type_row,
+                                    # device_serial_number_row,
                                     user_type_row,
+                                    # remarks_row,
                                     save_row,
                                     html.Div(id='result-message')
                                 ],

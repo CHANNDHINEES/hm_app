@@ -1,7 +1,7 @@
 from dash import dcc, html
 from components import FormRow
 import dash_bootstrap_components as dbc
-from pages.submit_stats import submit_stats_callback
+from pages.patient_records import patient_records_callback
 
 
 def get_input_area(object_name, heading, type, place_holder=None):
@@ -12,6 +12,7 @@ def get_input_area(object_name, heading, type, place_holder=None):
         placeholder=place_holder,
         className="form-control",
         debounce=True,
+        persistence = "memory"
     )
 
     form_row = FormRow(
@@ -29,18 +30,14 @@ def get_input_area(object_name, heading, type, place_holder=None):
     return form_row
 
 
-sys_row = get_input_area("sys", "SYS (mmHg)", "numeric", )
-dia_row = get_input_area("dia", "DIA (mmHg)", "numeric", )
-pulse_row = get_input_area("pulse", "PULSE (per minute)", "numeric", )
-temperature_row = get_input_area("temperature", "Temperature (°C)", "numeric")
-spo2_row = get_input_area("spo2", "SpO2 (%)", "numeric",)
-
+patient_id_row = get_input_area("find-patient", "Patient ID", "text", )
+clinic_id_row = get_input_area("find-clinic", "Clinic ID*", "text", )
 
 save_row = html.Div(
     [
 
-        dbc.Button("Submit", id="submit-button-stats", className="me-md-2"),
-        dbc.Button("Reset", id="reset-button-stats", className="me-md-2"),
+        dbc.Button("Find", id="find-user-button", className="me-md-2"),
+        dbc.Button("Reset", id="find-user-reset-button", className="me-md-2"),
     ],
     style={
         "width": "auto",
@@ -60,26 +57,23 @@ layout = html.Div(
                     children=html.Div(
                         [
                             dbc.Form(
-                                id="form-new-product",
+                                id="register-patient-form",
                                 children=[
-                                    sys_row,
-                                    dia_row,
-                                    pulse_row,
-                                    temperature_row,
-                                    spo2_row,
+                                    clinic_id_row,
+                                    patient_id_row,
+
                                     save_row,
-                                    html.Div(id='result-message-submit-stats')
+                                    html.Div(id='patient-result-display')
                                 ],
                             )
                         ],
-                        id="submit-stat-page",
+                        id="find-patient-page",
                         style={"display": "inline"},
                     ),
                 )
             ]
         ),
-        #     ]
-        # )
+
     ],
     style={"padding": "10px", "display": "inline"},
 )

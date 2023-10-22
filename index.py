@@ -1,7 +1,7 @@
 import sys
 import dash_bootstrap_components as dbc
 import requests
-from dash import dcc, html, State, no_update
+from dash import dcc, html, State
 from app import app
 import logging
 from dash_extensions.enrich import Output, Input
@@ -12,7 +12,9 @@ from pages.submit_stats import submit_stats
 from pages.register_patients import register_patients
 from utils.constants import REDIRECT_URI, CLIENT_ID, TOKEN_URL, USER_INFO_URL
 from datetime import datetime, timedelta
-
+from pages.view_history.view_history import view_history
+from pages.patient_records import patient_records
+from pages.deregister_patients import deregister_patient
 server = app.server
 
 logger = logging.getLogger(__name__)
@@ -21,16 +23,16 @@ logo_path = 'assets/logo.jpg'
 
 navbar = dbc.Navbar(
     children=[
-        # dbc.NavbarBrand(id="navbar-name"),
-
-            # Use row and col to control vertical alignment of logo / brand
             dbc.Row(
                 [
-                    dbc.Col(html.Img(src=logo_path, height="75px",
-                                     style={"marginLeft": "20px"})),
-                    dbc.Col(dbc.NavbarBrand("Remote Patient Monitoring",
+                    dbc.Col(html.A(html.Img(src=logo_path, height="75px",
+                                     style={"marginLeft": "20px"}),
+                           href="/home",
+                           )),
+                    dbc.Col(html.A(dbc.NavbarBrand("Remote Patient Monitoring",
                                             className="ms-2",
-                                            style={"marginLeft": "20px"})),
+                                            style={"marginLeft": "20px"}),
+                           href="/home")),
                     dbc.Col(html.Div(id="login-status")),
                     dcc.Store(id="session-store", data=None,
                               storage_type="local")
@@ -40,18 +42,7 @@ navbar = dbc.Navbar(
                 align="center",
                 className="g-0",
             ),
-            # style={"textDecoration": "none"},
 
-        dbc.DropdownMenu(
-            label="Menu",
-            children=[
-                dbc.DropdownMenuItem("Dashboard"),
-                dbc.DropdownMenuItem("Settings"),
-                dbc.DropdownMenuItem("Logout", href="/logout"),  # Set the href to the logout page
-            ],
-
-            className="ml-auto",  # This pushes the dropdown to the right corner
-        ),
     ],
 
     color="primary",
@@ -139,24 +130,26 @@ def render_page_content(pathname, href, existing_session_store):
                 session_data = {
                     'access_token': access_token,
                     'email': userinfo.get('email'),
+                    'name':userinfo.get('name'),
                     'user_type': userinfo.get('custom:usertype'),
+                    'nric': userinfo.get('custom:nric'),
                     'expires_at': datetime.utcnow() + timedelta(seconds=3600),
                     'refresh_token': refresh_token
                 }
                 existing_session_store = session_data
         except:
             pass
-
     if existing_session_store and existing_session_store['access_token'] and existing_session_store['user_type']:
         if pathname == "/":
             return login.layout, existing_session_store
         if existing_session_store['user_type'] == "patient":
+            # print(nric)
             if pathname == "/home":
                     return splash_screen_patient.layout, existing_session_store
-                # else:
-                #     return splash_screen_staff.layout, existing_session_store
             elif pathname == "/patient/submit-stats":
                 return submit_stats.layout, existing_session_store
+            elif pathname == "/patient/view-history":
+                return view_history(existing_session_store['nric']), existing_session_store
             else:
                 return dbc.Alert("404: Not found",
                                  color="danger"), existing_session_store
@@ -165,6 +158,10 @@ def render_page_content(pathname, href, existing_session_store):
                 return splash_screen_staff.layout, existing_session_store
             elif pathname == "/staff/register-patients":
                 return register_patients.layout, existing_session_store
+            elif pathname == "/staff/search-pat-records":
+                return patient_records.layout,existing_session_store
+            elif pathname == "/staff/de-register-patients":
+                return deregister_patient.layout,existing_session_store
             else:
                 return dbc.Alert("404: Not found",
                                  color="danger"), existing_session_store
