@@ -176,6 +176,7 @@ if __name__ == "__main__":
     app.run_server(
         port=port,
         debug=True,
+        host = '0.0.0.0',
         dev_tools_ui=True,
         dev_tools_props_check=False,
     )
