@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: hm-app
-          image: chandhinee/hm_app:v2 # Replace with your Docker Hub image
+          image: CONTAINER_IMAGE # Replace with your Docker Hub image
           ports:
             - containerPort: 8080 # Replace with the port your Dash app uses
           imagePullPolicy: Always

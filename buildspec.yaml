@@ -1,0 +1,39 @@
+version: 0.2
+phases:
+  install:
+    commands:
+      - echo "Install Phase - if you need additional packages, add them in this stage"
+  pre_build:
+    commands:
+      # This Docker Image tag will have date, time, and Codecommit version
+      - TAG="$(date +%Y-%m-%d.%H.%M.%S).$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | head -c 8)"
+      # Updating Docker Image tag in your Kubernetes Deployment Manifest
+      - echo "Update Image tag in Kubernetes manifest"
+      - sed -i 's@CONTAINER_IMAGE@'"$DOCKERHUB_USERNAME/$REPOSITORY_NAME:$TAG"'@' dash-deployment.yaml
+  build:
+    commands:
+      # Building Docker Image
+      - echo "Docker build started on `date`"
+      - echo "Building the Docker image..."
+      - docker build --tag $DOCKERHUB_USERNAME/$REPOSITORY_NAME:$TAG .
+  post_build:
+    commands:
+      # Push Docker Image to Docker Hub
+      - echo "Docker build completed on `date`"
+      - echo "Pushing the Docker image to Docker Hub"
+      - docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+      - docker push $DOCKERHUB_USERNAME/$REPOSITORY_NAME:$TAG
+      - echo "Docker Push to Docker Hub Completed -  $DOCKERHUB_USERNAME/$REPOSITORY_NAME:$TAG"
+      # No need for AWS CLI and assume role for Docker Hub
+
+      # Show time, applying manifests changes using kubectl
+      - echo "Update Kube Config configuration"
+      - kubectl apply -f dash-deployment.yaml
+      - echo "All done!!!! Kubernetes changes applied"
+      # Create Artifacts which we can use if we want to continue our pipeline for other stages
+      - printf '[{"name":"deployment.yaml","imageUri":"%s"}]' $DOCKERHUB_USERNAME/$REPOSITORY_NAME:$TAG > build.json
+
+artifacts:
+  files:
+    - build.json
+    - /*

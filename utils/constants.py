@@ -1,5 +1,6 @@
-# ENV_LINK = "http://localhost:8080"
-ENV_LINK = "https://a408af3b72fdb4803a341f3dabbeed91-2051859284.ap-southeast-2.elb.amazonaws.com"
+
+# ENV_LINK = "https://a408af3b72fdb4803a341f3dabbeed91-2051859284.ap-southeast-2.elb.amazonaws.com"
+ENV_LINK = "http://localhost:8080"
 USER_POOL_ID = "ap-southeast-2_OUg9hqyf4"
 CLIENT_ID = "3diqopiha1h5djmvii62kgti38"
 REDIRECT_URI = f"{ENV_LINK}/home"
